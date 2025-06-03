@@ -2,11 +2,13 @@ class_name Player extends CharacterBody2D
 
 const BALL = preload("res://ball/ball.tscn")
 
+enum Sprite { DEFAULT, WITHOUT_BALL }
+
 #region reference
-@onready var sprite_2d: Sprite2D = $Sprite2D
-@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var physics: Physics = $Physics
 @onready var state_machine: PlayerStateMachine = $StateMachine
+@onready var throw: PlayerThrowState = %Throw
 
 #endregion
 
@@ -51,7 +53,7 @@ var is_dashing: bool = false
 @export var throw_recoil: float = 2000.0
 var can_throw: bool = true
 var ball_recalled: bool = true
-
+var is_throwing: bool = false
 
 # coyote jump
 @export var coyote_time: float = 0.1
@@ -79,16 +81,25 @@ func _ready() -> void:
 	state_machine.init(self)
 
 func update_animation() -> void:
-	if not is_externally_affected:
-		state_machine.update_animation()
-		return
+	animated_sprite.frame = Sprite.DEFAULT if ball_recalled else Sprite.WITHOUT_BALL
+	#state_machine.update_animation()
 
 func _process(delta: float) -> void:
 	state_machine.update(delta)
 
 func _physics_process(delta: float) -> void:
+	if not ball_recalled and throw.ball != null:
+		if Input.is_action_pressed("recall_default") and not is_throwing:
+			throw.ball.default_recall_start(self)
+		elif Input.is_action_pressed("recall_navigation") and not is_throwing:
+			throw.ball.navigation_recall_start(self)
+		else:
+			throw.ball.recall_end()
 	direction_x = Input.get_axis("move_left", "move_right")
 	state_machine.physics_update(delta)
+	
+	# animation
+	update_animation()
 	
 	# actually move
 	velocity = movement_velocity

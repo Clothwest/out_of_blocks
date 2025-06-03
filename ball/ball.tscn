@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://chd7vxtjeq512"]
 
-[ext_resource type="Texture2D" uid="uid://cqlla636d7uh4" path="res://assets/ball.png" id="1_6plaf"]
 [ext_resource type="Script" uid="uid://dvh28qa1hgij1" path="res://ball/ball.gd" id="1_biv8x"]
+[ext_resource type="Texture2D" uid="uid://ce1yl7kfp6b7m" path="res://assets/box_and_ball.png" id="2_biv8x"]
 [ext_resource type="PackedScene" uid="uid://davhlj4j88tl4" path="res://physics/physics.tscn" id="2_pwunn"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6plaf"]
@@ -14,21 +14,24 @@ radius = 8.5
 collision_layer = 4
 script = ExtResource("1_biv8x")
 pickup_box = NodePath("PickupBox")
+recall_speed = 1000.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(2, 2)
-texture = ExtResource("1_6plaf")
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("2_biv8x")
+region_enabled = true
+region_rect = Rect2(60, 4, 8, 8)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("CircleShape2D_6plaf")
 
 [node name="Physics" parent="." instance=ExtResource("2_pwunn")]
 
 [node name="PickupBox" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PickupBox"]
 shape = SubResource("CircleShape2D_biv8x")
-
-[connection signal="body_entered" from="PickupBox" to="." method="_on_pickup_box_body_entered"]

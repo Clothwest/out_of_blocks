@@ -1,5 +1,7 @@
 class_name PlayerStateMachine extends Node
 
+signal state_changed(from: PlayerState.State, to: PlayerState.State)
+
 #enum State { NULL = -1, IDLE, MOVE, JUMP, FALL, DASH, THROW }
 
 @export var debug: bool = false
@@ -41,6 +43,7 @@ func change_state(to: PlayerState) -> void:
 		current_state.exit()
 	if to != null:
 		to.enter()
+		state_changed.emit(current_state.State, to.State)
 		current_state = to
 	if debug:
 		print(current_state.name)
