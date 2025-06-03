@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=4 uid="uid://bwwfg1vhg0l01"]
+[gd_scene load_steps=5 format=4 uid="uid://bwwfg1vhg0l01"]
 
 [ext_resource type="Texture2D" uid="uid://c3kmrbd2eyfs6" path="res://assets/blocks.png" id="1_6xmxd"]
 [ext_resource type="PackedScene" uid="uid://daspino52ubms" path="res://player/player.tscn" id="2_tcf2h"]
-[ext_resource type="PackedScene" uid="uid://chd7vxtjeq512" path="res://ball/ball.tscn" id="3_4717r"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tcf2h"]
 texture = ExtResource("1_6xmxd")
@@ -27,8 +26,3 @@ position = Vector2(-1203, -113)
 jump_impulse = Vector2(0, -500)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
-
-[node name="Ball" parent="." instance=ExtResource("3_4717r")]
-position = Vector2(-1127, -114)
-collision_layer = 4
-collision_mask = 3

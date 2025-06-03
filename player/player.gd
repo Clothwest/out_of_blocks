@@ -47,8 +47,8 @@ var can_dash: bool = true
 var is_dashing: bool = false
 
 # throw
-@export var throw_strength: float = 300.0
-@export var throw_recoil: float = 600.0
+@export var throw_strength: float = 1000.0
+@export var throw_recoil: float = 2000.0
 var can_throw: bool = true
 var ball_recalled: bool = true
 
