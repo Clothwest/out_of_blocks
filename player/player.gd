@@ -1,5 +1,7 @@
 class_name Player extends CharacterBody2D
 
+signal ball_throwed(ball: Ball)
+
 const BALL = preload("res://ball/ball.tscn")
 
 enum Sprite { DEFAULT, WITHOUT_BALL }
@@ -57,8 +59,13 @@ var is_throwing: bool = false
 
 # coyote jump
 @export var coyote_time: float = 0.1
-#var coyote_timer: float = 0.0
-#var is_in_coyote_time: bool = false
+var coyote_timer: float = 0.0
+var is_in_coyote_time: bool = false
+
+# jump buffer
+@export var jump_buffer_time: float = 0.1
+var jump_buffer_timer: float = 0.0
+var is_in_jump_buffer_time: bool = false
 
 #endregion
 
@@ -73,7 +80,6 @@ var movement_velocity: Vector2:
 var is_externally_affected: bool = false
 
 func _ready() -> void:
-	#coyote_timer = coyote_time
 	direction_x = initial_direction_x
 	movement_velocity = velocity
 	
@@ -88,6 +94,7 @@ func _process(delta: float) -> void:
 	state_machine.update(delta)
 
 func _physics_process(delta: float) -> void:
+	# throw
 	if not ball_recalled and throw.ball != null:
 		if Input.is_action_pressed("recall_default") and not is_throwing:
 			throw.ball.default_recall_start(self)
@@ -95,16 +102,40 @@ func _physics_process(delta: float) -> void:
 			throw.ball.navigation_recall_start(self)
 		else:
 			throw.ball.recall_end()
+	
+	# direction_x
 	direction_x = Input.get_axis("move_left", "move_right")
+	
+	# jump buffer
+	if Input.is_action_just_pressed("jump"):
+		jump_buffer_timer = 0.0
+		is_in_jump_buffer_time = true
+	if is_in_jump_buffer_time:
+		jump_buffer_timer = move_toward(jump_buffer_timer, jump_buffer_time, delta)
+		is_in_jump_buffer_time = false if jump_buffer_timer >= jump_buffer_time else true
+	
+	# state machine
 	state_machine.physics_update(delta)
 	
 	# animation
 	update_animation()
 	
+	# coyote
+	var was_on_floor: bool = is_on_floor()
+	
 	# actually move
 	velocity = movement_velocity
 	move_and_slide()
 	movement_velocity = velocity
+	
+	# coyote
+	var just_left_ground: bool = was_on_floor and not is_on_floor()
+	if just_left_ground and state_machine.current_state.state != PlayerState.State.JUMP:
+		coyote_timer = 0.0
+		is_in_coyote_time = true
+	if is_in_coyote_time:
+		coyote_timer = move_toward(coyote_timer, coyote_time, delta)
+		is_in_coyote_time = false if coyote_timer >= coyote_time else true
 	
 	# reset ability
 	reset_abilities()

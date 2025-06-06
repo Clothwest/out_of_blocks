@@ -19,7 +19,7 @@ func get_target_state() -> State:
 		return State.DASH
 	if Input.is_action_just_pressed("throw") and player.can_throw:
 		return State.THROW
-	if Input.is_action_just_pressed("jump") and player.is_on_floor():
+	if (player.is_on_floor() or player.is_in_coyote_time) and player.is_in_jump_buffer_time:
 		return State.JUMP
 	if player.direction_x != 0 and player.is_on_floor():
 		return State.MOVE
@@ -27,8 +27,8 @@ func get_target_state() -> State:
 		return State.IDLE
 	if not player.is_on_floor() and player.movement_velocity.y >= 0.0:
 		return State.FALL
-	return State.FALL
-	#return State.NULL
+	#return State.FALL
+	return State.NULL
 
 func transition() -> void:
 	var target_state: State = get_target_state()

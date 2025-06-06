@@ -1,5 +1,8 @@
 class_name Ball extends CharacterBody2D
 
+signal navigation_recall_started
+signal navigation_recall_ended
+
 @onready var physics: Physics = $Physics
 
 @export var pickup_box: Area2D
@@ -9,7 +12,7 @@ var is_being_recalled: bool
 
 # velocity
 var initial_velocity: Vector2 = Vector2(0.0, -300.0)
-@export var recall_speed: float = 400.0
+@export var recall_speed: float = 1000.0
 var movement_velocity: Vector2:
 	set(v):
 		physics.velocity = v
@@ -47,7 +50,7 @@ func default_recall_start(target: Player) -> void:
 	movement_velocity = target_direction * recall_speed
 
 func navigation_recall_start(target: Player) -> void:
-	pass
+	navigation_recall_started.emit()
 
 func recall_end() -> void:
 	pass

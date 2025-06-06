@@ -1,14 +1,18 @@
-class_name Physics extends Node2D
+class_name Physics extends Node
 
 enum Axis { X, Y, BOTH }
 
 # default value
-var default_gravity: Vector2 = Vector2(0, 1000.0)
-var default_gravity_scale: float = 1.0
+const DEFAULT_GRAVITY: Vector2 = DEFAULT_GRAVITY_DIRECTION * DEFAULT_GRAVITY_MAGNITUDE
+const DEFAULT_GRAVITY_DIRECTION: Vector2 = Vector2.DOWN
+const DEFAULT_GRAVITY_MAGNITUDE: float = 1000.0
+const DEFAULT_GRAVITY_SCALE: float = 1.0
 
 #region physics parameter
 # gravity
 var gravity: Vector2
+var gravity_direction: Vector2
+var gravity_magnition: float
 var gravity_scale: float
 
 # friction
@@ -22,8 +26,10 @@ var friction_direction: Vector2
 var velocity: Vector2
 
 func init() -> void:
-	gravity = default_gravity
-	gravity_scale = default_gravity_scale
+	gravity = DEFAULT_GRAVITY
+	gravity_direction = DEFAULT_GRAVITY_DIRECTION
+	gravity_magnition = DEFAULT_GRAVITY_MAGNITUDE
+	gravity_scale = DEFAULT_GRAVITY_SCALE
 
 #region force
 func apply_force(force: Vector2, delta: float = get_physics_process_delta_time()) -> void:

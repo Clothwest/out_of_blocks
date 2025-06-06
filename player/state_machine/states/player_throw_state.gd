@@ -31,6 +31,7 @@ func physics_update(delta: float)  -> void:
 		player.is_throwing = false if throw_timer >= throw_time else true
 	else:
 		transition()
+		transition_requested.emit(self, State.FALL)
 
 func throw() -> void:
 	# ball
@@ -40,7 +41,8 @@ func throw() -> void:
 	var throw_velocity: Vector2 = throw_direction * player.throw_strength
 	ball.set_initial_velocity(throw_velocity)
 	ball.global_position = player.global_position
-	player.get_parent().add_child(ball)
+	player.add_sibling(ball)
+	player.ball_throwed.emit(ball)
 	# recoil
 	player.physics.apply_impulse_with_reset(-1.0 * throw_direction * player.throw_recoil)
 	

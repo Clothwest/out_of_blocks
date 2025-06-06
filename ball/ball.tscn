@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://chd7vxtjeq512"]
+[gd_scene load_steps=9 format=3 uid="uid://chd7vxtjeq512"]
 
 [ext_resource type="Script" uid="uid://dvh28qa1hgij1" path="res://ball/ball.gd" id="1_biv8x"]
 [ext_resource type="Texture2D" uid="uid://ce1yl7kfp6b7m" path="res://assets/box_and_ball.png" id="2_biv8x"]
 [ext_resource type="PackedScene" uid="uid://davhlj4j88tl4" path="res://physics/physics.tscn" id="2_pwunn"]
+[ext_resource type="Script" uid="uid://bsflqeoljabq1" path="res://ball/ball_trail.gd" id="4_6xd6y"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6plaf"]
 radius = 8.0
@@ -10,11 +11,18 @@ radius = 8.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_biv8x"]
 radius = 8.5
 
+[sub_resource type="Curve" id="Curve_6xd6y"]
+_data = [Vector2(0, 0.1), 0.0, 0.0, 0, 0, Vector2(1, 1), 1.4, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_biv8x"]
+offsets = PackedFloat32Array(0, 0.566667, 1)
+colors = PackedColorArray(1, 1, 1, 0.760784, 1, 0.949333, 0.81, 1, 1, 0.733333, 0, 1)
+
 [node name="Ball" type="CharacterBody2D" node_paths=PackedStringArray("pickup_box")]
 collision_layer = 4
 script = ExtResource("1_biv8x")
 pickup_box = NodePath("PickupBox")
-recall_speed = 1000.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(2.5, 2.5)
@@ -35,3 +43,10 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PickupBox"]
 shape = SubResource("CircleShape2D_biv8x")
+
+[node name="Trail" type="Node" parent="."]
+
+[node name="Trail" type="Line2D" parent="Trail"]
+width_curve = SubResource("Curve_6xd6y")
+gradient = SubResource("Gradient_biv8x")
+script = ExtResource("4_6xd6y")
